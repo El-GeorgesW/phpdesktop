@@ -8,6 +8,7 @@ Table of contents:
 * [Fundings for new features](#fundings-for-new-features)
 * [Support development](#support-development)
 * [Seeking sponsors](#seeking-sponsors)
+* [Past sponsors](#past-sponsors)
 
 
 ## Introduction
@@ -123,3 +124,12 @@ then please contact [Czarek](https://www.linkedin.com/in/czarektomczak/).
 Long term sponsorships are welcome and Czarek is open to ideas about
 the project. He would love to spend more time on developing this project,
 but he can't afford doing so in his free time.
+
+## Past Sponsors
+
+Special thanks to Xlinesoft for supporting PHP Desktop development.
+
+Xlinesoft develops PHPRunner, a rapid application development tool for building database-driven PHP applications. Some developers package PHPRunner applications with PHP Desktop.
+
+https://xlinesoft.com/phprunner/
+

@@ -1,6 +1,6 @@
 # Versions
-set(PHPDESKTOP_VERSION "130.3")
-set(CEF_VERSION "130.1.16+g5a7e5ed+chromium-130.0.6723.117")
+set(PHPDESKTOP_VERSION "154.0")
+set(CEF_VERSION "154.0.26+ge72305f+chromium-154.0.8037.58")
 set(PHPDESKTOP_ID "phpdesktop")
 set(PHPDESKTOP_NAME "PHP Desktop")
 cmake_minimum_required(VERSION 3.21)

@@ -1,9 +1,17 @@
 #!/bin/bash
 
-# This script builds with PHP extensions enabled: mysqli, openssl.
+# This script builds PHP with extensions enabled:
+# - Database: mysqli, pdo-sqlite, pdo-mysql
+# - Compression: zlib, zip
+# - Cryptography: openssl, hash, ftp, sockets
+# - Web: curl
+# - Encoding: mbstring, iconv
+# - Images: gd (png, jpeg, freetype)
+# - Content: dom, xml, tokenizer
+# - Utilities: fileinfo, standard
 
 # Download PHP sources from http://php.net/downloads.php and extract them in the
-# "phpdesktop/php-$arch/" directory, so you you should have a "phpdesktop/php-$arch/php-x.x.x"
+# "phpdesktop/php-$arch/" directory, so you should have a "phpdesktop/php-$arch/php-x.x.x"
 # directory.
 #
 # Then run buildphp.sh script.
@@ -119,7 +127,7 @@ echo "Found PHP sources: ${php_sources_dir}"
 
 echo "Configure PHP..."
 cp $sqlite_dir/dist-install/lib/libsqlite3.dylib ./libsqlite3.dylib  # To get around bug in conftest
-export EXTRA_CFLAGS="-Wno-unused-command-line-argument -lresolv"  # To get around bug: uresolved symbol "_res_9_dn_expand".
+export EXTRA_CFLAGS="-Wno-unused-command-line-argument -lresolv"  # To get around bug: unresolved symbol "_res_9_dn_expand".
 export OPENSSL_CFLAGS="-I${openssl_dir}/dist-install/include"
 export OPENSSL_LIBS="-L${openssl_dir}/dist-install/lib -lcrypto -lssl"
 export LIBXML_CFLAGS="-I${libxml2_dir}/dist-install/include"
@@ -138,12 +146,22 @@ export ONIG_LIBS="-L${onig_dir}/dist-install/lib -lonig"
     --prefix=${php_sources_dir}/dist-install \
     --exec-prefix=${php_sources_dir}/dist-install \
     --with-mysqli \
+    --with-pdo-sqlite="$sqlite_dir/dist-install" \
+    --enable-pdo \
     --with-openssl \
     --with-iconv="$iconv_dir/dist-install" \
     --with-zlib="$zlib_dir/dist-install"  \
     --enable-gd \
     --with-jpeg \
-    --enable-mbstring
+    --enable-mbstring \
+    --enable-dom \
+    --enable-xml \
+    --enable-tokenizer \
+    --enable-fileinfo \
+    --enable-ftp \
+    --enable-sockets \
+    --with-curl \
+    --enable-zip
 echo "Build PHP..."
 make install
 

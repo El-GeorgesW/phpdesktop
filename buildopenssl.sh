@@ -1,5 +1,5 @@
 # Download OpenSSL sources from https://github.com/openssl/openssl/releases
-# and extract them in the PHP directory.
+# and extract them in the php/ directory.
 #
 # Then run buildopenssl.sh script.
 
@@ -11,30 +11,18 @@ set -x
 
 clear && clear
 
-if [[ $(uname -m) == "arm64" ]]; then
-    arch="arm64"
-elif [[ $(uname -m) == "x86_64" ]]; then
-    arch="x86_64"
-else
-    echo "Unknown architecture"
-    exit 1
-fi
-
 root_dir=$(realpath $(dirname $0))
 echo "root_dir=$root_dir"
 
-if ! cd $root_dir/php-$arch/ ; then
-    echo "Can't find PHP directory"
+if ! cd $root_dir/php/ ; then
+    echo "php/ directory doesn't exist"
     exit 1
 fi
-php_dir=$(realpath $(pwd))
-echo "Found PHP: ${php_dir}"
-
 rm -f libcrypto.3.dylib
 rm -f libssl.3.dylib
 rm -f openssl.cnf
 
-if ! cd $php_dir/openssl-*/ ; then
+if ! cd $root_dir/php/openssl-*/ ; then
     echo "Can't find openssl directory"
     exit 1
 fi

@@ -1,5 +1,5 @@
 # Download zlib 1.3.1 sources from: https://github.com/madler/zlib/releases
-# Then extract in the PHP directory.
+# Then extract in the php/ directory.
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -9,28 +9,16 @@ set -x
 
 clear && clear
 
-if [[ $(uname -m) == "arm64" ]]; then
-    arch="arm64"
-elif [[ $(uname -m) == "x86_64" ]]; then
-    arch="x86_64"
-else
-    echo "Unknown architecture"
-    exit 1
-fi
-
 root_dir=$(realpath $(dirname $0))
 echo "root_dir=$root_dir"
 
-if ! cd $root_dir/php-$arch/ ; then
-    echo "Can't find PHP directory"
+if ! cd $root_dir/php/ ; then
+    echo "php/ directory doesn't exist"
     exit 1
 fi
-php_dir=$(realpath $(pwd))
-echo "Found PHP: ${php_dir}"
+rm -f libz.1.3.1.dylib
 
-rm -f libz.1.dylib
-
-if ! cd $php_dir/zlib-*/ ; then
+if ! cd $root_dir/php/zlib-*/ ; then
     echo "Can't find zlib directory"
     exit 1
 fi
@@ -44,7 +32,7 @@ echo "Configure zlib..."
 echo "Build zlib..."
 make install
 
-cp ./dist-install/lib/libz.1.dylib ./../libz.1.dylib
-install_name_tool -id libz.1.dylib ./../libz.1.dylib
+cp ./dist-install/lib/libz.1.3.1.dylib ./../libz.1.3.1.dylib
+install_name_tool -id libz.1.3.1.dylib ./../libz.1.3.1.dylib
 
 echo "Done."

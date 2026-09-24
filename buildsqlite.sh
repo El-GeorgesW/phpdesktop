@@ -1,5 +1,5 @@
 # Download sources from: https://www.sqlite.org/download.html
-# Then extract in the PHP directory.
+# Then extract in the php/ directory.
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -9,35 +9,23 @@ set -x
 
 clear && clear
 
-if [[ $(uname -m) == "arm64" ]]; then
-    arch="arm64"
-elif [[ $(uname -m) == "x86_64" ]]; then
-    arch="x86_64"
-else
-    echo "Unknown architecture"
-    exit 1
-fi
-
 root_dir=$(realpath $(dirname $0))
 echo "root_dir=$root_dir"
 
-if ! cd $root_dir/php-$arch/ ; then
-    echo "Can't find PHP directory"
+if ! cd $root_dir/php/ ; then
+    echo "php/ directory doesn't exist"
     exit 1
 fi
-php_dir=$(realpath $(pwd))
-echo "Found PHP: ${php_dir}"
-
 rm -f libsqlite3.dylib
 
-if ! cd $php_dir/zlib-*/ ; then
+if ! cd $root_dir/php/zlib-*/ ; then
     echo "Can't find zlib directory"
     exit 1
 fi
 zlib_dir=$(realpath $(pwd))
 echo "Found zlib: ${zlib_dir}"
 
-if ! cd $php_dir/sqlite-*/ ; then
+if ! cd $root_dir/php/sqlite-*/ ; then
     echo "Can't find sqlite directory"
     exit 1
 fi
@@ -56,6 +44,6 @@ make install
 cp ./dist-install/lib/libsqlite3.dylib.3.* ./../libsqlite3.dylib
 install_name_tool -id libsqlite3.dylib ./../libsqlite3.dylib
 install_name_tool -delete_rpath $sqlite_dir/dist-install/lib ./../libsqlite3.dylib
-install_name_tool -change $zlib_dir/dist-install/lib/libz.1.dylib libz.1.dylib ./../libsqlite3.dylib
+install_name_tool -change $zlib_dir/dist-install/lib/libz.1.dylib libz.1.3.1.dylib ./../libsqlite3.dylib
 
 echo "Done."

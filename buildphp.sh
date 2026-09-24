@@ -125,6 +125,15 @@ fi
 php_sources_dir=$(realpath $(pwd))
 echo "Found PHP sources: ${php_sources_dir}"
 
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is required to build curl and zip support"
+    exit 1
+fi
+curl_dir=$(brew --prefix curl)
+libzip_dir=$(brew --prefix libzip)
+echo "Found curl: ${curl_dir}"
+echo "Found libzip: ${libzip_dir}"
+
 echo "Configure PHP..."
 cp $sqlite_dir/dist-install/lib/libsqlite3.dylib ./libsqlite3.dylib  # To get around bug in conftest
 export EXTRA_CFLAGS="-Wno-unused-command-line-argument -lresolv"  # To get around bug: unresolved symbol "_res_9_dn_expand".
@@ -142,6 +151,10 @@ export JPEG_CFLAGS="-I${jpeg_dir}/dist-install/include"
 export JPEG_LIBS="-L${jpeg_dir}/dist-install/lib -ljpeg"
 export ONIG_CFLAGS="-I${onig_dir}/dist-install/include"
 export ONIG_LIBS="-L${onig_dir}/dist-install/lib -lonig"
+export CURL_CFLAGS="-I${curl_dir}/include"
+export CURL_LIBS="-L${curl_dir}/lib -lcurl"
+export LIBZIP_CFLAGS="-I${libzip_dir}/include"
+export LIBZIP_LIBS="-L${libzip_dir}/lib -lzip"
 ./configure -v \
     --prefix=${php_sources_dir}/dist-install \
     --exec-prefix=${php_sources_dir}/dist-install \
@@ -160,13 +173,15 @@ export ONIG_LIBS="-L${onig_dir}/dist-install/lib -lonig"
     --enable-fileinfo \
     --enable-ftp \
     --enable-sockets \
-    --with-curl \
-    --enable-zip
+    --with-curl="$curl_dir" \
+    --with-zip="$libzip_dir"
 echo "Build PHP..."
 make install
 
 cp ./dist-install/bin/php-cgi $php_dir/php-cgi
 cp $root_dir/php.ini $php_dir/php.ini
+cp "$curl_dir/lib/libcurl.4.dylib" "$php_dir/libcurl.4.dylib"
+cp "$libzip_dir/lib/libzip.5.dylib" "$php_dir/libzip.5.dylib"
 
 cd $php_dir
 
@@ -188,5 +203,8 @@ install_name_tool -change $zlib_dir/dist-install/lib/libz.1.dylib libz.1.dylib .
 install_name_tool -change $png_dir/dist-install/lib/libpng16.16.dylib libpng.dylib ./php-cgi
 install_name_tool -change $jpeg_dir/dist-install/lib/libjpeg.9.dylib libjpeg.dylib ./php-cgi
 install_name_tool -change $onig_dir/dist-install/lib/libonig.5.dylib libonig.dylib ./php-cgi
+
+install_name_tool -change $curl_dir/lib/libcurl.4.dylib libcurl.4.dylib ./php-cgi
+install_name_tool -change $libzip_dir/lib/libzip.5.dylib libzip.5.dylib ./php-cgi
 
 echo "Done."

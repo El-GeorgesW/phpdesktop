@@ -208,6 +208,12 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy
             "${CMAKE_CURRENT_SOURCE_DIR}/php-${PROJECT_ARCH}/libonig.dylib"
             "${PHPDESKTOP_APP}/Contents/MacOS/libonig.dylib"
+    COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/php-${PROJECT_ARCH}/libcurl.4.dylib"
+            "${PHPDESKTOP_APP}/Contents/MacOS/libcurl.4.dylib"
+    COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/php-${PROJECT_ARCH}/libzip.5.dylib"
+            "${PHPDESKTOP_APP}/Contents/MacOS/libzip.5.dylib"
     VERBATIM
 )
 

@@ -197,6 +197,7 @@ void Client::OnBeforeClose(CefRefPtr<CefBrowser> browser)
 
 bool Client::OnBeforePopup(CefRefPtr<CefBrowser> browser,
                              CefRefPtr<CefFrame> frame,
+                             int popup_id,
                              const CefString& target_url,
                              const CefString& target_frame_name,
                              WindowOpenDisposition target_disposition,

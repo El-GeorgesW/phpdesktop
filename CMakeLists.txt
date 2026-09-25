@@ -94,7 +94,9 @@ set_target_properties(phpdesktop PROPERTIES
 )
 add_dependencies(phpdesktop libcef_dll_wrapper)
 target_link_libraries(phpdesktop libcef_dll_wrapper ${CEF_STANDARD_LIBS})
-ADD_LOGICAL_TARGET("cef_sandbox_lib" "${CEF_SANDBOX_LIB_DEBUG}" "${CEF_SANDBOX_LIB_RELEASE}")
+if(CEF_SANDBOX_LIB_DEBUG OR CEF_SANDBOX_LIB_RELEASE)
+    ADD_LOGICAL_TARGET("cef_sandbox_lib" "${CEF_SANDBOX_LIB_DEBUG}" "${CEF_SANDBOX_LIB_RELEASE}")
+endif()
 set_target_properties(phpdesktop PROPERTIES
     RESOURCE "${RESOURCES}"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in"
@@ -149,7 +151,9 @@ foreach(_suffix_list ${CEF_HELPER_APP_SUFFIXES})
         MACOSX_BUNDLE_INFO_PLIST ${_helper_info_plist}
         OUTPUT_NAME ${_helper_output_name}
     )
-    target_link_libraries(${_helper_target} cef_sandbox_lib)
+    if(CEF_SANDBOX_LIB_DEBUG OR CEF_SANDBOX_LIB_RELEASE)
+        target_link_libraries(${_helper_target} cef_sandbox_lib)
+    endif()
 
     # Add the Helper as a dependency of the main executable target.
     add_dependencies(phpdesktop "${_helper_target}")

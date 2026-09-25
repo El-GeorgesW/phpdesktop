@@ -39,9 +39,9 @@ echo "Configure libxml2..."
     --without-python \
     --with-iconv="$iconv_dir/dist-install"
 echo "Build libxml2..."
-make install
+make -j"$(sysctl -n hw.ncpu)" install
 
-cp ./dist-install/lib/libxml2.2.dylib ./../libxml2.2.dylib
+cp ./dist-install/lib/libxml2.16.dylib ./../libxml2.2.dylib
 install_name_tool -id libxml2.2.dylib ./../libxml2.2.dylib
 install_name_tool -change $iconv_dir/dist-install/lib/libiconv.2.dylib libiconv.2.dylib ./../libxml2.2.dylib
 

@@ -30,7 +30,7 @@ echo "Configure iconv..."
     --prefix=${iconv_dir}/dist-install \
     --exec-prefix=${iconv_dir}/dist-install
 echo "Build iconv..."
-make install
+make -j"$(sysctl -n hw.ncpu)" install
 
 cp ./dist-install/lib/libiconv.2.dylib ./../libiconv.2.dylib
 install_name_tool -id libiconv.2.dylib ./../libiconv.2.dylib

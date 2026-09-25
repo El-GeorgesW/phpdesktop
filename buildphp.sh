@@ -54,7 +54,7 @@ cp "$sqlite_dir/dist-install/lib/libsqlite3.dylib" "$php_dir/libsqlite3.dylib"
 export EXTRA_CFLAGS="-Wno-unused-command-line-argument -lresolv"
 export OPENSSL_CFLAGS="-I$openssl_dir/dist-install/include"
 export OPENSSL_LIBS="-L$openssl_dir/dist-install/lib -lcrypto -lssl"
-export LIBXML_CFLAGS="-I$libxml2_dir/dist-install/include"
+export LIBXML_CFLAGS="-I$libxml2_dir/dist-install/include -I$libxml2_dir/dist-install/include/libxml2"
 export LIBXML_LIBS="-L$libxml2_dir/dist-install/lib -lxml2"
 export SQLITE_CFLAGS="-I$sqlite_dir/dist-install/include"
 export SQLITE_LIBS="-L$sqlite_dir/dist-install/lib -lsqlite3"
@@ -91,12 +91,13 @@ cd "$php_dir"
     --enable-sockets \
     --with-curl="$curl_dir" \
     --with-zip="$libzip_dir"
-make install
+make -j"$(sysctl -n hw.ncpu)" install
 
 cp "$php_dir/dist-install/bin/php-cgi" "$php_root/php-cgi"
 cp "$root_dir/php.ini" "$php_root/php.ini"
 cp "$curl_dir/lib/libcurl.4.dylib" "$php_root/libcurl.4.dylib"
 cp "$libzip_dir/lib/libzip.5.dylib" "$php_root/libzip.5.dylib"
+ln -sf libz.1.3.1.dylib "$php_root/libz.1.dylib"
 
 cd "$php_root"
 install_name_tool -rpath "$openssl_dir/dist-install/lib" '@loader_path/.' php-cgi
@@ -118,3 +119,12 @@ install_name_tool -change "$jpeg_dir/dist-install/lib/libjpeg.9.dylib" libjpeg.d
 install_name_tool -change "$onig_dir/dist-install/lib/libonig.5.dylib" libonig.dylib php-cgi
 install_name_tool -change "$curl_dir/lib/libcurl.4.dylib" libcurl.4.dylib php-cgi
 install_name_tool -change "$libzip_dir/lib/libzip.5.dylib" libzip.5.dylib php-cgi
+
+# Normalize dependencies whose upstream install names vary between releases.
+install_name_tool -change libiconv.2.dylib '@loader_path/libiconv.2.dylib' php-cgi
+install_name_tool -change "$libxml2_dir/dist-install/lib/libxml2.16.dylib" '@loader_path/libxml2.2.dylib' php-cgi
+install_name_tool -change libz.1.dylib '@loader_path/libz.1.3.1.dylib' php-cgi
+install_name_tool -change libz.1.3.1.dylib '@loader_path/libz.1.3.1.dylib' php-cgi
+install_name_tool -change libiconv.2.dylib '@loader_path/libiconv.2.dylib' libxml2.2.dylib
+install_name_tool -change libz.1.dylib '@loader_path/libz.1.3.1.dylib' libpng.dylib
+install_name_tool -change libz.1.3.1.dylib '@loader_path/libz.1.3.1.dylib' libsqlite3.dylib

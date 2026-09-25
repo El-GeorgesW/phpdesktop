@@ -30,7 +30,7 @@ echo "Configure zlib..."
     --prefix=${zlib_dir}/dist-install \
     --eprefix=${zlib_dir}/dist-install
 echo "Build zlib..."
-make install
+make -j"$(sysctl -n hw.ncpu)" install
 
 cp ./dist-install/lib/libz.1.3.1.dylib ./../libz.1.3.1.dylib
 install_name_tool -id libz.1.3.1.dylib ./../libz.1.3.1.dylib
